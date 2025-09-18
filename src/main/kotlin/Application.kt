@@ -58,9 +58,8 @@ private fun getAPIKey(): String {
 }
 
 fun createClient(): HttpClient? {
-    var client: HttpClient? = null
     try {
-        client = HttpClient(CIO) {
+        return HttpClient(CIO) {
             install(ContentNegotiation) {
                 jackson()
             }
@@ -88,14 +87,13 @@ fun createClient(): HttpClient? {
         return null
     }
 
-    return client
 }
-// TODO("GET RECIPES: FILTERED BY INGREDIENTS LISTED")
+// TODO:("GET RECIPES: FILTERED BY INGREDIENTS LISTED")
 suspend fun getRecipe(client: HttpClient, request: List<String>): HttpResponse {
     val key: String = getAPIKey()
     return TODO("Provide the return value")
 }
-
+// TODO:("PROCESS RESPONSE DATA INTO USABLE FORMAT (ApiResponse)")
 private fun processResponse(response: HttpResponse): ApiResponse {
     TODO("PROCESS RESPONSE DATA INTO USABLE FORMAT (ApiResponse)")
 }
