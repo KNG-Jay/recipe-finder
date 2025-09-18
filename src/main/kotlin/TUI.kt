@@ -1,5 +1,9 @@
 package com.example
 
-class TUI {
+import io.ktor.client.HttpClient
+
+
+class TUI(client: HttpClient?) {
+
 
 }

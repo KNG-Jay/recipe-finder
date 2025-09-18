@@ -20,6 +20,7 @@ dependencies {
     implementation("io.ktor:ktor-client-logging:${ktorVersion}")
     implementation("ch.qos.logback:logback-classic:${logbackVersion}")
     implementation("com.sksamuel.hoplite:hoplite-core:2.7.5")
+    implementation("com.sksamuel.hoplite:hoplite-hocon:2.7.5")
     implementation(libs.ktor.serialization.jackson)
     /*
     implementation(libs.ktor.server.content.negotiation)
