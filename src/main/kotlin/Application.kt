@@ -105,11 +105,11 @@ suspend fun getResponse(client: HttpClient, ingredientsList: List<String>): Http
         }
     }
     // MAX NUMBER OF RECIPES TO SHOW  --  DEFAULT: 10
-    val number: Int = 10
+    val number = 10
     // (1) Maximize Used Ingredients || (2) Minimize Missing Ingredients
-    val ranking: Int = 2
+    val ranking = 2
     // Ignore Pantry Staples (Flour, Water, Salt, etc.)
-    val ignorePantry: Boolean = true
+    val ignorePantry = true
 
     val url: String = buildString {
         append(baseUrl)
@@ -159,7 +159,7 @@ private fun initialize(client: HttpClient?, key: String) {
     }
 }
 
-suspend fun main() {
+fun main() {
     val client: HttpClient? = createClient()
     val key: String = getAPIKey()
 
