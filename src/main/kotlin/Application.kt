@@ -93,19 +93,42 @@ fun createClient(): HttpClient? {
     }
 
 }
-// TODO:("GET RECIPES: FILTERED BY INGREDIENTS LISTED")
-suspend fun getRecipe(client: HttpClient, request: List<String>): HttpResponse {
+// TODO:(CHECK IF WORKING)
+suspend fun getResponse(client: HttpClient, ingredientsList: List<String>): HttpResponse {
+    val baseUrl = "https://api.spoonacular.com/recipes/findByIngredients?"
     val key: String = getAPIKey()
-    return TODO("Provide the return value")
+    val ingredients: String = buildString {
+        append("ingredients=")
+        for (item in ingredientsList) {
+            append("+")
+            append(item)
+        }
+    }
+    // MAX NUMBER OF RECIPES TO SHOW  --  DEFAULT: 10
+    val number: Int = 10
+    // (1) Maximize Used Ingredients || (2) Minimize Missing Ingredients
+    val ranking: Int = 2
+    // Ignore Pantry Staples (Flour, Water, Salt, etc.)
+    val ignorePantry: Boolean = true
+
+    val url: String = buildString {
+        append(baseUrl)
+        append("&${key}")
+        append("&${ingredients}")
+        append("&${number}")
+        append("&${ranking}")
+        append("%${ignorePantry}")
+    }
+
+    return client.get(url)
+
 }
 // TODO:("PROCESS RESPONSE DATA INTO USABLE FORMAT (ApiResponse)")
 private fun processResponse(response: HttpResponse): ApiResponseItem {
     TODO("PROCESS RESPONSE DATA INTO USABLE FORMAT (ApiResponse)")
 }
 
-suspend fun main() {
-    val client: HttpClient? = createClient()
-    val key: String = getAPIKey()
+private fun initialize(client: HttpClient?, key: String) {
     val scanner = Scanner(System.`in`)
     var ch: Char? = null
 
@@ -120,7 +143,6 @@ suspend fun main() {
 
         when (ch) {
             'Q' -> {
-                //println("\n\nThank You For Using Recipe Finder!!\n\n")
                 break
             }
             'T' -> TUI(client)
@@ -135,6 +157,13 @@ suspend fun main() {
 
         }
     }
+}
+
+suspend fun main() {
+    val client: HttpClient? = createClient()
+    val key: String = getAPIKey()
+
+    initialize(client, key)
 
     println("\n\nThank You For Using Recipe Finder!!")
 
