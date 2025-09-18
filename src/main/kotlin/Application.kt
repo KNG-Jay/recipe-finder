@@ -12,19 +12,13 @@ import com.sksamuel.hoplite.ConfigLoaderBuilder
 import com.sksamuel.hoplite.addResourceOrFileSource
 import io.ktor.serialization.jackson.*
 import com.fasterxml.jackson.databind.*
-import kotlin.system.exitProcess
-import java.util.Scanner
 
 
 data class Config(val apiKey: Key)
 
 data class Key(val key: String)
 
-data class ApiResponseItem(
-    val id: String,
-    val image: String,
-    val imageType: String,
-    val likes: String,
+data class ApiResponse(
     val missedIngredientCount: String,
     val missedIngredients: List<Ingredient>,
     val title: String,
@@ -55,11 +49,11 @@ private fun getAPIKey(): String {
             .build()
             .loadConfigOrThrow<Config>()
         val key: String = config.apiKey.key
-        println("KEY RETRIEVED  ::  $key")
+        println("KEY RETRIEVED :: $key")
         return key
     } catch (err: Exception) {
-        println("ERROR RETRIEVING API-KEY -- ERROR::MESSAGE:  ${err.message}")
-        return "MISSING"
+        println("ERROR RETRIEVING API-KEY -- ERROR::MESSAGE: ${err.message}")
+        return ""
     }
 }
 
@@ -87,10 +81,10 @@ fun createClient(): HttpClient? {
             }
         }
     } catch (err: ClientRequestException) {
-        println("Client Failed To Initialize -- ERROR::MESSAGE:  ${err.message}")
+        println("Client Failed To Initialize -- ERROR::MESSAGE: ${err.message}")
         return null
     } catch (err: Exception) {
-        println("CLIENT FAILED TO START -- UNKNOWN_ERROR:  ${err.message}")
+        println("CLIENT FAILED TO START -- UNKNOWN_ERROR: ${err.message}")
         return null
     }
 
@@ -102,44 +96,15 @@ suspend fun getRecipe(client: HttpClient, request: List<String>): HttpResponse {
     return TODO("Provide the return value")
 }
 
-private fun processResponse(response: HttpResponse): ApiResponseItem {
+private fun processResponse(response: HttpResponse): ApiResponse {
     TODO("PROCESS RESPONSE DATA INTO USABLE FORMAT (ApiResponse)")
 }
 
 suspend fun main() {
     val client: HttpClient? = createClient()
     val key: String = getAPIKey()
-    val scanner = Scanner(System.`in`)
-    var ch: Char? = null
 
-    while (ch != 'Q') {
-        println("\n\n\n\n\nWelcome To Recipe Finder!")
-        println("Please Enter A Valid Input -->\t\tKEY : $key")
-        println("\nt - Launch Text Interface")
-        println("g - Launch Graphical Interface")
-        println("\nq - Quit\n")
-
-        ch = scanner.next()[0].uppercaseChar()
-
-        when (ch) {
-            'Q' -> {
-                //println("\n\nThank You For Using Recipe Finder!!\n\n")
-                break
-            }
-            'T' -> TUI(client)
-            'G' -> {
-                println("\nERROR :: NOT IMPLEMENTED YET\t:P\n")
-                continue
-            }
-            else -> {
-                println("\nUNKNOWN KEY ENTERED '${ch}' ---  PLEASE ENTER A VALID KEY.\n")
-                continue
-            }
-
-        }
-    }
-
-    println("\n\nThank You For Using Recipe Finder!!")
+    TUI(client)
 
     client?.close()
 
