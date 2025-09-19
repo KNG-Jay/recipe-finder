@@ -6,12 +6,13 @@ import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.engine.cio.*
 import io.ktor.client.request.*
-import io.ktor.client.statement.*
+import io.ktor.client.call.body
 import io.ktor.http.ContentType
+import io.ktor.serialization.jackson.*
 import com.sksamuel.hoplite.ConfigLoaderBuilder
 import com.sksamuel.hoplite.addResourceOrFileSource
-import io.ktor.serialization.jackson.*
-import com.fasterxml.jackson.databind.*
+import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.Serializable
 import java.util.Scanner
 
 
@@ -19,6 +20,7 @@ data class Config(val apiKey: Key)
 
 data class Key(val key: String)
 
+@Serializable
 data class ApiResponseItem(
     val id: String,
     val image: String,
@@ -32,6 +34,7 @@ data class ApiResponseItem(
     val usedIngredients: List<Ingredient>
 )
 
+@Serializable
 data class Ingredient(
     val aisle: String,
     val amount: String,
@@ -62,7 +65,7 @@ private fun getAPIKey(): String {
     }
 }
 
-fun createClient(): HttpClient? {
+private fun createClient(): HttpClient? {
     try {
         return HttpClient(CIO) {
             install(ContentNegotiation) {
@@ -93,8 +96,8 @@ fun createClient(): HttpClient? {
     }
 
 }
-// TODO:(CHECK IF WORKING)
-suspend fun getResponse(client: HttpClient, ingredientsList: List<String>): HttpResponse {
+// TODO:  CHECK IF WORKING
+suspend fun getResponse(client: HttpClient?, ingredientsList: List<String>): List<ApiResponseItem> {
     val baseUrl = "https://api.spoonacular.com/recipes/findByIngredients?"
     val key: String = getAPIKey()
     val ingredients: String = buildString {
@@ -120,12 +123,18 @@ suspend fun getResponse(client: HttpClient, ingredientsList: List<String>): Http
         append("%${ignorePantry}")
     }
 
-    return client.get(url)
+    try {
+        val response: List<ApiResponseItem> = client!!.get(url).body()
+        return response
+    } catch (err: Exception) {
+        println("ERROR GETTING RESPONSE DATA  --  ERROR::MESSAGE:  ${err.message}")
+        return emptyList()
+    }
 
 }
-// TODO:("PROCESS RESPONSE DATA INTO USABLE FORMAT (ApiResponse)")
-private fun processResponse(response: HttpResponse): ApiResponseItem {
-    TODO("PROCESS RESPONSE DATA INTO USABLE FORMAT (ApiResponse)")
+// TODO:  PROCESS RESPONSE DATA INTO USABLE FORMAT (List<ApiResponseItem>)
+fun processResponse(response: List<ApiResponseItem>) {
+    return response.forEach { item -> println(item) }
 }
 
 private fun initialize(client: HttpClient?, key: String) {
@@ -145,7 +154,10 @@ private fun initialize(client: HttpClient?, key: String) {
             'Q' -> {
                 break
             }
-            'T' -> TUI(client)
+            'T' -> {
+                runBlocking { tui(client) }
+                continue
+            }
             'G' -> {
                 println("\nERROR :: NOT IMPLEMENTED YET\t:P\n")
                 continue
