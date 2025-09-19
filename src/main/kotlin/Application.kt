@@ -14,6 +14,7 @@ import com.sksamuel.hoplite.addResourceOrFileSource
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import java.util.Scanner
+import kotlin.String
 
 
 data class Config(val apiKey: Key)
@@ -32,18 +33,48 @@ data class ApiResponseItem(
     val unusedIngredients: List<Ingredient>,
     val usedIngredientCount: String,
     val usedIngredients: List<Ingredient>
-)
+) : Iterable<String> {
+    override fun iterator(): Iterator<String> {
+        return object : Iterator<String> {
+            var index = 0
+            val props = listOf(
+                id,
+                image,
+                imageType,
+                likes,
+                missedIngredientCount,
+                missedIngredients.joinToString(" ") { it.component1() },
+                title,
+                unusedIngredients.joinToString(" ") { it.component1() },
+                usedIngredientCount,
+                usedIngredients.joinToString(" ") { it.component1() },
+                )
+
+            override fun hasNext(): Boolean {
+                return index < props.size
+            }
+
+            override fun next(): String {
+                if (!hasNext()) throw NoSuchElementException()
+                return props[index++]
+            }
+
+        }
+    }
+
+}
 
 @Serializable
 data class Ingredient(
     val aisle: String,
     val amount: String,
     val id: String,
-    val image: ContentType.Image,
+    val image: String,
     val meta: List<String>,
     val name: String,
     val original: String,
     val originalName: String,
+    val extendedName: String?,
     val unit: String,
     val unitLong: String,
     val unitShort: String
@@ -96,10 +127,10 @@ private fun createClient(): HttpClient? {
     }
 
 }
-// TODO:  CHECK IF WORKING
+
 suspend fun getResponse(client: HttpClient?, ingredientsList: List<String>): List<ApiResponseItem> {
     val baseUrl = "https://api.spoonacular.com/recipes/findByIngredients?"
-    val key: String = getAPIKey()
+    val key: String = "apiKey=".plus(getAPIKey())
     val ingredients: String = buildString {
         append("ingredients=")
         for (item in ingredientsList) {
@@ -108,7 +139,7 @@ suspend fun getResponse(client: HttpClient?, ingredientsList: List<String>): Lis
         }
     }
     // MAX NUMBER OF RECIPES TO SHOW  --  DEFAULT: 10
-    val number = 10
+    val number = 20
     // (1) Maximize Used Ingredients || (2) Minimize Missing Ingredients
     val ranking = 2
     // Ignore Pantry Staples (Flour, Water, Salt, etc.)
@@ -120,7 +151,7 @@ suspend fun getResponse(client: HttpClient?, ingredientsList: List<String>): Lis
         append("&${ingredients}")
         append("&${number}")
         append("&${ranking}")
-        append("%${ignorePantry}")
+        append("&${ignorePantry}")
     }
 
     try {
@@ -132,9 +163,24 @@ suspend fun getResponse(client: HttpClient?, ingredientsList: List<String>): Lis
     }
 
 }
-// TODO:  PROCESS RESPONSE DATA INTO USABLE FORMAT (List<ApiResponseItem>)
+// TODO: PROCESS RESPONSE DATA INTO USABLE FORMAT
 fun processResponse(response: List<ApiResponseItem>) {
-    return response.forEach { item -> println(item) }
+    for (items in response) {
+        println("\n${items.title} ------->" +
+                "\n\tID: ${items.id}" +
+                "\n\tImage: ${items.image}" +
+                "\n\tMissed Ingredients Count: ${items.missedIngredientCount}" +
+                "\n\tMissed Ingredients: ${items.missedIngredients.joinToString(", ") { it.name }}" +
+                "\n\tUnused Ingredients: ${items.usedIngredients.joinToString(", ") { it.name }}" +
+                "\n\tUsed Ingredients Count: ${items.usedIngredientCount}" +
+                "\n\tUsed Ingredients: ${items.usedIngredients.joinToString(", ") { it.name }}"
+        )
+
+    }
+    println("\n\nEND OF RESPONSE ------->  Press ENTER To Continue")
+    readlnOrNull()
+    println("\nGoing Home....")
+
 }
 
 private fun initialize(client: HttpClient?, key: String) {

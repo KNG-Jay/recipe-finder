@@ -11,7 +11,7 @@ suspend fun tui(client: HttpClient?) {
         return display
     }
 
-    var ch: Char? = null
+    var ch: Char? = '@'
     val scanner = Scanner(System.`in`)
 
     while (ch != 'Q') {
@@ -30,6 +30,7 @@ suspend fun tui(client: HttpClient?) {
         when (ch) {
             'Y' -> {
                 process(client, list)
+                break
             }
             else -> {
                 println("\n\nRemoving List And Restarting...")
