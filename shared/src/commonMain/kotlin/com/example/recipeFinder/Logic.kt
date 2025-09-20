@@ -11,8 +11,6 @@ import io.ktor.serialization.jackson.*
 import com.sksamuel.hoplite.ConfigLoaderBuilder
 import com.sksamuel.hoplite.addResourceOrFileSource
 import kotlinx.serialization.Serializable
-import kotlin.String
-
 
 data class Config(val apiKey: Key)
 
@@ -78,7 +76,7 @@ data class Ingredient(
 )
 
 
-fun getAPIKey(): String {
+internal fun getAPIKey(): String {
     try {
         val config =  ConfigLoaderBuilder.default()
             .addResourceOrFileSource("api-key.conf", optional = false, allowEmpty = false)
