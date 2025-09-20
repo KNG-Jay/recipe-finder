@@ -19,6 +19,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import recipe_finder.composeapp.generated.resources.Res
 import recipe_finder.composeapp.generated.resources.compose_multiplatform
 
+
 @Composable
 @Preview
 fun App() {
@@ -36,6 +37,7 @@ fun App() {
             }
             AnimatedVisibility(showContent) {
                 val greeting = remember { Greeting().greet() }
+
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,

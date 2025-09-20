@@ -12,6 +12,7 @@ import com.sksamuel.hoplite.ConfigLoaderBuilder
 import com.sksamuel.hoplite.addResourceOrFileSource
 import kotlinx.serialization.Serializable
 
+
 data class Config(val apiKey: Key)
 
 data class Key(val key: String)
