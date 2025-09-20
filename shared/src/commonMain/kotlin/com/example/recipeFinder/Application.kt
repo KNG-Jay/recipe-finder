@@ -16,7 +16,7 @@ import java.util.Scanner
 import kotlin.String
 
 
-data class Config(val apiKey: com.example.recipeFinder.Key)
+data class Config(val apiKey: Key)
 
 data class Key(val key: String)
 
