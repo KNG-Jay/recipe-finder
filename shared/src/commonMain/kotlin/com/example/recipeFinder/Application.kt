@@ -1,4 +1,4 @@
-package com.example
+package com.example.recipeFinder
 
 import io.ktor.client.*
 import io.ktor.client.plugins.logging.*
@@ -7,7 +7,6 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.engine.cio.*
 import io.ktor.client.request.*
 import io.ktor.client.call.body
-import io.ktor.http.ContentType
 import io.ktor.serialization.jackson.*
 import com.sksamuel.hoplite.ConfigLoaderBuilder
 import com.sksamuel.hoplite.addResourceOrFileSource
@@ -17,7 +16,7 @@ import java.util.Scanner
 import kotlin.String
 
 
-data class Config(val apiKey: Key)
+data class Config(val apiKey: com.example.recipeFinder.Key)
 
 data class Key(val key: String)
 

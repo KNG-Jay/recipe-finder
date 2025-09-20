@@ -1,4 +1,4 @@
-package com.example
+package com.example.recipeFinder
 
 import io.ktor.client.HttpClient
 import java.util.Scanner
