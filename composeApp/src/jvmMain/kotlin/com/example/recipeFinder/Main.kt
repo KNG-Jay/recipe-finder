@@ -8,6 +8,6 @@ fun main() = application {
         onCloseRequest = ::exitApplication,
         title = "demo",
     ) {
-        _root_ide_package_.com.example.recipeFinder.App()
+        App()
     }
 }
