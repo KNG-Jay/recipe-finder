@@ -1,5 +1,7 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
+val androidx = "1.9.0"
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.composeMultiplatform)
@@ -12,6 +14,9 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            //implementation("androidx.compose.ui:ui:${androidx}")
+            //implementation("androidx.compose.material:material:${androidx}")
+            //implementation("androidx.compose.ui:ui-tooling-preview:${androidx}")
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
