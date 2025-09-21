@@ -176,7 +176,7 @@ fun App() {
         NavHost(navController = navController, startDestination = "home") {
             composable("home") { HomeScreen(navController) }
             composable("detail/{data}") { backStackEntry ->
-                val data = backStackEntry.arguments?.getString("data") ?: "error"
+                val data = backStackEntry.arguments?.toString() ?: "error"
                 DetailScreen(data)
             }
         }
