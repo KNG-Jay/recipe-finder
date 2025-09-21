@@ -20,6 +20,7 @@ kotlin {
             implementation("androidx.compose.ui:ui:${androidxVersion}")
             implementation("androidx.compose.material:material:${androidxVersion}")
             implementation("androidx.compose.ui:ui-tooling-preview:${androidxVersion}")
+            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.9.0")
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
