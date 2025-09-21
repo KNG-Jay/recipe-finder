@@ -10,6 +10,9 @@ import io.ktor.client.call.body
 import io.ktor.serialization.jackson.*
 import com.sksamuel.hoplite.ConfigLoaderBuilder
 import com.sksamuel.hoplite.addResourceOrFileSource
+import io.ktor.client.statement.HttpResponse
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 import kotlinx.serialization.Serializable
 
 
@@ -80,7 +83,7 @@ data class Ingredient(
 internal fun getAPIKey(): String {
     try {
         val config =  ConfigLoaderBuilder.default()
-            .addResourceOrFileSource("api-key.conf", optional = false, allowEmpty = false)
+            .addResourceOrFileSource(API_KEY_FILE, optional = false, allowEmpty = false)
             .build()
             .loadConfigOrThrow<Config>()
         val key: String = config.apiKey.key
@@ -125,7 +128,7 @@ fun createClient(): HttpClient? {
 }
 
 suspend fun getResponse(client: HttpClient?, ingredientsList: List<String>): List<ApiResponseItem> {
-    val baseUrl = "https://api.spoonacular.com/recipes/findByIngredients?"
+    val baseUrl = API_SOURCE_SPOONACULAR
     val key: String = "apiKey=".plus(getAPIKey())
     val ingredients: String = buildString {
         append("ingredients=")
@@ -155,6 +158,36 @@ suspend fun getResponse(client: HttpClient?, ingredientsList: List<String>): Lis
         return response
     } catch (err: Exception) {
         println("ERROR GETTING RESPONSE DATA  --  ERROR::MESSAGE:  ${err.message}")
+        return emptyList()
+    }
+
+}
+
+suspend fun desktopCheckActive(): String {
+    try {
+        val client = HttpClient(CIO)
+        val response: HttpResponse = client.get("${SERVER_ADDRESS}${SERVER_PORT}/api/con")
+        client.close()
+        return if (response.status == 200..299) "STATUS:  ${response.body() as String}"
+        else "STATUS:  API_OFFLINE"
+    } catch (err: Exception) {
+        println("FAILED TO CONNECT TO KTOR SERVER  --  ERROR::MESSAGE:  ${err.message}")
+        return "STATUS:  API_OFFLINE"
+    }
+
+}
+
+suspend fun desktopGetResponse(ingList: String): List<ApiResponseItem> {
+    try {
+        val client = HttpClient(CIO)
+        val response: HttpResponse = client.post("${SERVER_ADDRESS}${SERVER_PORT}/api/recipe") {
+            contentType(ContentType.Application.Json)
+            setBody(ingList)
+        }
+        client.close()
+        return response.body()
+    } catch (err: Exception) {
+        println("FAILED TO CONNECT TO KTOR SERVER  --  ERROR::MESSAGE:  ${err.message}")
         return emptyList()
     }
 

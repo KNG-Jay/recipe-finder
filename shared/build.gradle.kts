@@ -3,33 +3,32 @@ plugins {
 
 }
 
-group = "com.example"
-version = "0.0.1"
-val ktorVersion: String by project
-
 kotlin {
     jvm()
+    //androidTarget()
 
     sourceSets {
         commonMain.dependencies {
-            // put your Multiplatform dependencies here
-            implementation(project.dependencies.platform("io.ktor:ktor-bom:${ktorVersion}"))
-            implementation("io.ktor:ktor-client-core:${ktorVersion}")
-            implementation("io.ktor:ktor-client-cio:${ktorVersion}")
-            implementation("io.ktor:ktor-client-content-negotiation:${ktorVersion}")
-            implementation("io.ktor:ktor-client-logging:${ktorVersion}")
-            implementation("com.sksamuel.hoplite:hoplite-core:2.7.5")
-            implementation("com.sksamuel.hoplite:hoplite-hocon:2.7.5")
-            implementation(libs.ktor.serialization.jackson)
-            //implementation(projects.shared)
-            implementation(libs.logback.classic)
-            implementation(libs.ktor.serverCore)
-            implementation(libs.ktor.serverNetty)
-        }
-        commonTest.dependencies {
-            implementation(libs.kotlin.test)
-            implementation(libs.kotlin.testJunit)
+                // Multiplatform Dependencies
+                api(project.dependencies.platform(
+                    "io.ktor:ktor-bom:${libs.versions.ktor.get()}"))
+                api(libs.ktor.client.core)
+                api(libs.ktor.client.cio)
+                api(libs.ktor.client.contentNegotiation)
+                api(libs.ktor.client.logging)
+                api(libs.hoplite.core)
+                api(libs.hoplite.hocon)
+                api(libs.coil.core)
+                api(libs.coil.compose)
+                api(libs.coil.network)
+                api(libs.ktor.serialization.jackson)
+                api(libs.logback.classic)
+                api(libs.ktor.serverCore)
+                api(libs.ktor.serverNetty)
+                api(libs.kotlin.test)
+                api(libs.kotlin.testJunit)
+
         }
     }
-}
 
+}

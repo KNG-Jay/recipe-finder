@@ -1,6 +1,7 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
-val androidx = "1.9.0"
+val ktorVersion = libs.versions.ktor.get()
+val androidxVersion = libs.versions.androidx.asProvider().get()
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -14,9 +15,11 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            //implementation("androidx.compose.ui:ui:${androidx}")
-            //implementation("androidx.compose.material:material:${androidx}")
-            //implementation("androidx.compose.ui:ui-tooling-preview:${androidx}")
+            //implementation(projects.shared)
+            implementation(project(":shared"))
+            implementation("androidx.compose.ui:ui:${androidxVersion}")
+            implementation("androidx.compose.material:material:${androidxVersion}")
+            implementation("androidx.compose.ui:ui-tooling-preview:${androidxVersion}")
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
@@ -25,7 +28,6 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
-            implementation(projects.shared)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -33,6 +35,7 @@ kotlin {
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
+            implementation("io.ktor:ktor-client-java:${ktorVersion}")
         }
     }
 }
@@ -40,11 +43,11 @@ kotlin {
 
 compose.desktop {
     application {
-        mainClass = "org.example.demo.MainKt"
+        mainClass = "com.example.recipeFinder.MainKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "org.example.demo"
+            packageName = "com.example.recipeFinder"
             packageVersion = "1.0.0"
         }
     }

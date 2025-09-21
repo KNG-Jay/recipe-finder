@@ -21,12 +21,12 @@ fun Application.module() {
     val mapper = jacksonObjectMapper()
 
     routing {
-        get("/api/con") {
+        get(API_SERVER_CON) {
             call.respondText("STATUS: API_ACTIVE")
 
         }
 
-        post("/api/recipe") {
+        post(API_SERVER_POST) {
             try {
                 val ingredients: String = call.receiveText()
                 val response: List<ApiResponseItem> = getResponse(client, ingredients.split(" "))
