@@ -15,10 +15,10 @@ application {
 }
 
 dependencies {
-    //implementation(projects.shared)
     implementation(project(":shared"))
     implementation(libs.ktor.serverCore)
     implementation(libs.ktor.serverNetty)
+    implementation(variantOf(libs.netty.epoll) { classifier("linux-x86_64") })
 
     testImplementation(libs.ktor.serverTestHost)
 }

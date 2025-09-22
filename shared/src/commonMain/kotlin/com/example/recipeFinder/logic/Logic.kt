@@ -1,4 +1,4 @@
-package com.example.recipeFinder
+package com.example.recipeFinder.logic
 
 import io.ktor.client.*
 import io.ktor.client.plugins.logging.*
@@ -10,9 +10,6 @@ import io.ktor.client.call.body
 import io.ktor.serialization.jackson.*
 import com.sksamuel.hoplite.ConfigLoaderBuilder
 import com.sksamuel.hoplite.addResourceOrFileSource
-import io.ktor.client.statement.HttpResponse
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
 import kotlinx.serialization.Serializable
 
 
@@ -158,36 +155,6 @@ suspend fun getResponse(client: HttpClient?, ingredientsList: List<String>): Lis
         return response
     } catch (err: Exception) {
         println("ERROR GETTING RESPONSE DATA  --  ERROR::MESSAGE:  ${err.message}")
-        return emptyList()
-    }
-
-}
-
-suspend fun desktopCheckActive(): String {
-    try {
-        val client = HttpClient(CIO)
-        val response: HttpResponse = client.get("${SERVER_ADDRESS}${SERVER_PORT}/api/con")
-        client.close()
-        return if (response.status == 200..299) "STATUS:  ${response.body() as String}"
-        else "STATUS:  API_OFFLINE"
-    } catch (err: Exception) {
-        println("FAILED TO CONNECT TO KTOR SERVER  --  ERROR::MESSAGE:  ${err.message}")
-        return "STATUS:  API_OFFLINE"
-    }
-
-}
-
-suspend fun desktopGetResponse(ingList: String): List<ApiResponseItem> {
-    try {
-        val client = HttpClient(CIO)
-        val response: HttpResponse = client.post("${SERVER_ADDRESS}${SERVER_PORT}/api/recipe") {
-            contentType(ContentType.Application.Json)
-            setBody(ingList)
-        }
-        client.close()
-        return response.body()
-    } catch (err: Exception) {
-        println("FAILED TO CONNECT TO KTOR SERVER  --  ERROR::MESSAGE:  ${err.message}")
         return emptyList()
     }
 

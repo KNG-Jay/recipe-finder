@@ -1,5 +1,7 @@
 package com.example.recipeFinder
 
+import com.example.recipeFinder.logic.*
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,7 +22,8 @@ import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.unit.dp
-import androidx.navigation.*
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -30,8 +33,14 @@ import coil3.request.ImageRequest
 import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import coil3.compose.setSingletonImageLoaderFactory
-import coil3.compose.rememberAsyncImagePainter
 import coil3.request.crossfade
+import io.ktor.client.call.body
+import io.ktor.client.request.get
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.client.statement.HttpResponse
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -94,28 +103,48 @@ fun CheckCon() {
     coroutineScope.launch {
         while (true) {
             result.value = desktopCheckActive()
-            delay(3000)
+            delay(5000)
         }
     }
     return Text(text = result.value)
 
 }
 
-@Composable
-fun GetRecipesList(ingList: String): List<ApiResponseItem> {
-    val result = remember { mutableStateOf<List<ApiResponseItem>>(emptyList()) }
-
-    LaunchedEffect(Unit) {
-        result.value = desktopGetResponse(ingList.trim())
+suspend fun desktopCheckActive(): String {
+    try {
+        val client = createClient()!!
+        val response: HttpResponse = client.get("${SERVER_ADDRESS}${SERVER_PORT}${API_SERVER_CON}")
+        val check: String = response.body()
+        client.close()
+        return if (response.status.value in 200..299) "STATUS:  $check"
+        else "STATUS:  API_OFFLINE"
+    } catch (err: Exception) {
+        println("FAILED TO CONNECT TO KTOR SERVER  --  ERROR::MESSAGE:  ${err.message}")
+        return "STATUS:  API_OFFLINE"
     }
-    return result.value
+
+}
+
+suspend fun desktopGetResponse(ingList: String): List<ApiResponseItem> {
+    try {
+        val client = createClient()!!
+        val response: HttpResponse = client.post("${SERVER_ADDRESS}${SERVER_PORT}${API_SERVER_POST}") {
+            contentType(ContentType.Application.Json)
+            setBody(ingList)
+        }
+        client.close()
+        println("RESPONSE :: APP RECEIVED:\n${response.body() as String}")
+        return response.body()
+    } catch (err: Exception) {
+        println("FAILED TO CONNECT TO KTOR SERVER  --  ERROR::MESSAGE:  ${err.message}")
+        return emptyList()
+    }
 
 }
 
 @Composable
 fun displayRecipes(ingList: String) {
     val result = remember { mutableStateOf<List<ApiResponseItem>>(emptyList()) }
-    val recipesList = GetRecipesList(ingList)
 
     LaunchedEffect(Unit) {
         result.value = desktopGetResponse(ingList.trim())
@@ -125,11 +154,12 @@ fun displayRecipes(ingList: String) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(text = "ID: ${recipe.id}")
                 ImageDisplay(recipe.image)
-                Text(text = "Missing Ingredients Count: ${recipe.missedIngredientCount}")
-                Text(text = "Missed Ingredients: ${recipe.missedIngredients.joinToString(", ") { it.name }}")
-                Text(text = "Unused Ingredients: ${recipe.usedIngredients.joinToString(", ") { it.name }}")
-                Text(text = "Used Ingredients Count: ${recipe.usedIngredientCount}")
-                Text(text = "Used Ingredients: ${recipe.usedIngredients.joinToString(", ") { it.name }}")
+                Text(text = "Missed Ingredients [${recipe.missedIngredientCount}]: " +
+                        recipe.missedIngredients.joinToString(", ") { it.name })
+                Text(text = "Unused Ingredients [${recipe.usedIngredients.size}]: " +
+                        recipe.usedIngredients.joinToString(", ") { it.name })
+                Text(text = "Used Ingredients [${recipe.usedIngredientCount}]: " +
+                        recipe.usedIngredients.joinToString(", ") { it.name })
             }
         }
     }
@@ -146,19 +176,14 @@ fun getAsyncImageLoader(context: PlatformContext): ImageLoader {
 @Composable
 fun ImageDisplay(url: String) {
     val context: PlatformContext = LocalPlatformContext.current
-    val imageLoader = remember { ImageLoader(context) }
 
-    val painter = rememberAsyncImagePainter(
+    return AsyncImage(
         model = ImageRequest.Builder(context)
             .data(url)
             .build(),
-        imageLoader = imageLoader,
-    )
-
-    return AsyncImage(
-        model = painter,
         contentDescription = "Image of Ingredient",
-        modifier = Modifier.size(128.dp)
+        modifier = Modifier.size(128.dp),
+
     )
 
 }
@@ -175,8 +200,9 @@ fun App() {
     MaterialTheme {
         NavHost(navController = navController, startDestination = "home") {
             composable("home") { HomeScreen(navController) }
-            composable("detail/{data}") { backStackEntry ->
-                val data = backStackEntry.arguments?.toString() ?: "error"
+            composable("detail/{data}") { backStackEntry: NavBackStackEntry ->
+                val savedStateHandle = backStackEntry.savedStateHandle
+                val data = savedStateHandle.get<String>("data") ?: "error"
                 DetailScreen(data)
             }
         }

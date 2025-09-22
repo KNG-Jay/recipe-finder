@@ -3,7 +3,7 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
-api-key.conf
+server/src/main/resources/api-key.conf
 
 ### STS ###
 .apt_generated

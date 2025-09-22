@@ -1,7 +1,10 @@
-package com.example.recipeFinder
+package com.example.recipeFinder.server
+
+import com.example.recipeFinder.logic.*
 
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import io.ktor.http.ContentType
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
@@ -11,18 +14,24 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 
-fun main() {
-    embeddedServer(Netty, port = SERVER_PORT, host = "0.0.0.0", module = Application::module)
-        .start(wait = true)
+fun startServer() {
+        embeddedServer(
+            Netty,
+            port = SERVER_PORT,
+            host = SERVER_HOST,
+            module = Application::module
+            ).start(wait = true)
+
 }
 
 fun Application.module() {
-    val client = createClient()
+    val client = createClient()!!
     val mapper = jacksonObjectMapper()
 
     routing {
         get(API_SERVER_CON) {
-            call.respondText("STATUS: API_ACTIVE")
+            call.respondText("API_ACTIVE")
+            log.info("SERVER - RESPONSE :: ACTIVE")
 
         }
 
@@ -30,8 +39,10 @@ fun Application.module() {
             try {
                 val ingredients: String = call.receiveText()
                 val response: List<ApiResponseItem> = getResponse(client, ingredients.split(" "))
+                log.info("SERVER - RESPONSE :: SERVER RECEIVED:\n${response}")
                 val jsonArray: String = mapper.writeValueAsString(response)
-                call.respondText(jsonArray)
+                log.info("SERVER - STAGED :: DATA PREPPED FOR CLIENT:\n${jsonArray}")
+                call.respondText(jsonArray, ContentType.Application.Json)
 
             } catch (err: InvalidBodyException) {
                 call.respondText("ERROR COULD NOT GET POST BODY -- ERROR::MESSAGE:  ${err.message}")

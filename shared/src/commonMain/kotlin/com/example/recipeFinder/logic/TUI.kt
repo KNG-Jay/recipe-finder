@@ -1,4 +1,4 @@
-package com.example.recipeFinder
+package com.example.recipeFinder.logic
 
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.runBlocking
@@ -97,13 +97,13 @@ fun processResponse(response: List<ApiResponseItem>) {
 }
 
 fun main() {
-    val client: HttpClient? = createClient()
+    val client = createClient()!!
     val key: String = getAPIKey()
 
     initialize(client, key)
 
     println("\n\nThank You For Using Recipe Finder!!")
 
-    client?.close()
+    client.close()
 
 }

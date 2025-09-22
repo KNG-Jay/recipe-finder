@@ -10,8 +10,9 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
                 // Multiplatform Dependencies
-                api(project.dependencies.platform(
+                /*api(project.dependencies.platform(
                     "io.ktor:ktor-bom:${libs.versions.ktor.get()}"))
+                */
                 api(libs.ktor.client.core)
                 api(libs.ktor.client.cio)
                 api(libs.ktor.client.contentNegotiation)
@@ -23,8 +24,6 @@ kotlin {
                 api(libs.coil.network)
                 api(libs.ktor.serialization.jackson)
                 api(libs.logback.classic)
-                api(libs.ktor.serverCore)
-                api(libs.ktor.serverNetty)
                 api(libs.kotlin.test)
                 api(libs.kotlin.testJunit)
 

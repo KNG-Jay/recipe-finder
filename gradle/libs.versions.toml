@@ -1,4 +1,5 @@
 [versions]
+netty-transport = "4.1.68.Final"
 androidx-lifecycle = "2.9.4"
 composeHotReload = "1.0.0-beta07"
 composeMultiplatform = "1.9.0"
@@ -12,6 +13,7 @@ coil = "3.2.0"
 androidx = "1.9.0"
 
 [libraries]
+netty-epoll = { module = "io.netty:netty-transport-native-epoll", version.ref = "netty-transport" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { module = "junit:junit", version.ref = "junit" }

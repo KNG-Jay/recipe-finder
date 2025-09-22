@@ -1,4 +1,4 @@
-package com.example.recipeFinder
+package com.example.recipeFinder.logic
 
 interface Platform {
     val name: String
