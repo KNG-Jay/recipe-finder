@@ -1,6 +1,7 @@
 package com.example.recipeFinder
 
 import com.example.recipeFinder.logic.*
+import com.example.recipeFinder.server.*
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -39,13 +40,6 @@ import coil3.compose.AsyncImage
 import coil3.compose.LocalPlatformContext
 import coil3.compose.setSingletonImageLoaderFactory
 import coil3.request.crossfade
-import io.ktor.client.call.body
-import io.ktor.client.request.get
-import io.ktor.client.request.post
-import io.ktor.client.request.setBody
-import io.ktor.client.statement.HttpResponse
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -114,7 +108,7 @@ fun DetailScreen(navController: NavController, data: String?) {
 }
 
 @Composable
-fun CheckerPage(navController: NavController, inputData: String) {
+fun CheckerScreen(navController: NavController, inputData: String) {
     if (inputData.matches(Regex(".*[0-9!@#$%^&*()_+=-].*"))) {
         return Column(
             verticalArrangement = Arrangement.Center,
@@ -189,36 +183,6 @@ fun CheckCon(): String {
 
 }
 
-suspend fun desktopCheckActive(): String {
-    try {
-        val client = createClient()!!
-        val response: HttpResponse = client.get("${SERVER_ADDRESS}${SERVER_PORT}${API_SERVER_CON}")
-        val check: String = response.body()
-        client.close()
-        return if (response.status.value in 200..299) "STATUS:  $check"
-        else "STATUS:  API_OFFLINE"
-    } catch (err: Exception) {
-        println("FAILED TO CONNECT TO KTOR SERVER  --  ERROR::MESSAGE:  ${err.message}")
-        return "STATUS:  API_OFFLINE"
-    }
-}
-
-suspend fun desktopGetResponse(ingList: String): List<ApiResponseItem> {
-    try {
-        val client = createClient()!!
-        val response: HttpResponse = client.post("${SERVER_ADDRESS}${SERVER_PORT}${API_SERVER_POST}") {
-            contentType(ContentType.Application.Json)
-            setBody(ingList)
-        }
-        client.close()
-        println("RESPONSE :: APP RECEIVED:\n${response.body() as String}")
-        return response.body()
-    } catch (err: Exception) {
-        println("FAILED TO CONNECT TO KTOR SERVER  --  ERROR::MESSAGE:  ${err.message}")
-        return emptyList()
-    }
-}
-
 @Composable
 fun displayRecipes(ingList: String) {
     val result = remember { mutableStateOf<List<ApiResponseItem>>(emptyList()) }
@@ -283,7 +247,7 @@ fun App() {
             composable("confirm/{data}") { backStackEntry: NavBackStackEntry ->
                 val savedStateHandle = backStackEntry.savedStateHandle
                 val data = savedStateHandle.get<String>("data") ?: "error"
-                CheckerPage(navController, data)
+                CheckerScreen(navController, data)
             }
             composable("detail/{data}") { backStackEntry: NavBackStackEntry ->
                 val savedStateHandle = backStackEntry.savedStateHandle

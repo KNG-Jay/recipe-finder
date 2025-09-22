@@ -4,7 +4,13 @@ import com.example.recipeFinder.logic.*
 
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import io.ktor.client.call.body
+import io.ktor.client.request.get
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
+import io.ktor.http.contentType
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
@@ -56,4 +62,34 @@ fun Application.module() {
         }
     }
 
+}
+
+suspend fun desktopCheckActive(): String {
+    try {
+        val client = createClient()!!
+        val response: HttpResponse = client.get("${SERVER_ADDRESS}${SERVER_PORT}${API_SERVER_CON}")
+        val check: String = response.body()
+        client.close()
+        return if (response.status.value in 200..299) "STATUS:  $check"
+        else "STATUS:  API_OFFLINE"
+    } catch (err: Exception) {
+        println("FAILED TO CONNECT TO KTOR SERVER  --  ERROR::MESSAGE:  ${err.message}")
+        return "STATUS:  API_OFFLINE"
+    }
+}
+
+suspend fun desktopGetResponse(ingList: String): List<ApiResponseItem> {
+    try {
+        val client = createClient()!!
+        val response: HttpResponse = client.post("${SERVER_ADDRESS}${SERVER_PORT}${API_SERVER_POST}") {
+            contentType(ContentType.Application.Json)
+            setBody(ingList)
+        }
+        client.close()
+        println("RESPONSE :: APP RECEIVED:\n${response.body() as String}")
+        return response.body()
+    } catch (err: Exception) {
+        println("FAILED TO CONNECT TO KTOR SERVER  --  ERROR::MESSAGE:  ${err.message}")
+        return emptyList()
+    }
 }
