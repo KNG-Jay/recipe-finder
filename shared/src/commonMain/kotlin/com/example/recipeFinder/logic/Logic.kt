@@ -54,10 +54,8 @@ data class ApiResponseItem(
                 if (!hasNext()) throw NoSuchElementException()
                 return props[index++]
             }
-
         }
     }
-
 }
 
 @Serializable
@@ -121,7 +119,6 @@ fun createClient(): HttpClient? {
         println("CLIENT FAILED TO START -- UNKNOWN_ERROR:  ${err.message}")
         return null
     }
-
 }
 
 suspend fun getResponse(client: HttpClient?, ingredientsList: List<String>): List<ApiResponseItem> {
@@ -157,5 +154,4 @@ suspend fun getResponse(client: HttpClient?, ingredientsList: List<String>): Lis
         println("ERROR GETTING RESPONSE DATA  --  ERROR::MESSAGE:  ${err.message}")
         return emptyList()
     }
-
 }

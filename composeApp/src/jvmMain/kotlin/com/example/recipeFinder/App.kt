@@ -80,7 +80,6 @@ fun HomeScreen(navController: NavController) {
         }
 
     }
-
 }
 
 @Composable
@@ -123,7 +122,6 @@ suspend fun desktopCheckActive(): String {
         println("FAILED TO CONNECT TO KTOR SERVER  --  ERROR::MESSAGE:  ${err.message}")
         return "STATUS:  API_OFFLINE"
     }
-
 }
 
 suspend fun desktopGetResponse(ingList: String): List<ApiResponseItem> {
@@ -140,7 +138,6 @@ suspend fun desktopGetResponse(ingList: String): List<ApiResponseItem> {
         println("FAILED TO CONNECT TO KTOR SERVER  --  ERROR::MESSAGE:  ${err.message}")
         return emptyList()
     }
-
 }
 
 @Composable
@@ -152,7 +149,10 @@ fun displayRecipes(ingList: String) {
     }
     LazyColumn {
         items(result.value) { recipe: ApiResponseItem ->
-            Column(modifier = Modifier.padding(16.dp)) {
+            Column(modifier = Modifier
+                .padding(16.dp)
+                .fillMaxSize(),
+                ) {
                 Text(text = "ID: ${recipe.id}")
                 ImageDisplay(recipe.image)
                 Text(text = "Missed Ingredients [${recipe.missedIngredientCount}]: " +
@@ -171,7 +171,6 @@ fun getAsyncImageLoader(context: PlatformContext): ImageLoader {
     return ImageLoader.Builder(context)
         .crossfade(true)
         .build()
-
 }
 
 @Composable
@@ -184,9 +183,7 @@ fun ImageDisplay(url: String) {
             .build(),
         contentDescription = "Image of Ingredient",
         modifier = Modifier.size(128.dp),
-
-    )
-
+        )
 }
 
 @Composable
@@ -207,7 +204,6 @@ fun App() {
                 DetailScreen(data)
             }
         }
-
     }
 
 }

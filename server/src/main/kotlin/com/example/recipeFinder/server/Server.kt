@@ -53,9 +53,7 @@ fun Application.module() {
             } catch (err: Exception) {
                 call.respondText("ERROR :: UNKNOWN ERROR -- ERROR::MESSAGE:  ${err.message}")
             }
-
         }
-
     }
 
 }

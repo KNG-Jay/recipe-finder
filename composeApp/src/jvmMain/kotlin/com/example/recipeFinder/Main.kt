@@ -11,7 +11,6 @@ fun main() = application {
 
     GlobalScope.launch {
         startServer()
-
     }
 
     Window(
