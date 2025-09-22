@@ -48,7 +48,6 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun HomeScreen(navController: NavController) {
-    var recipesList by remember { mutableStateOf<List<ApiResponseItem>?>(null) }
     var userInput by remember { mutableStateOf("") }
 
     Column(
@@ -86,6 +85,8 @@ fun HomeScreen(navController: NavController) {
 
 @Composable
 fun DetailScreen(data: String?) {
+    var recipesList by remember { mutableStateOf<List<ApiResponseItem>?>(null) }
+
     Text("Here Are Some Suggestions From The Ingredients Listed")
     if (!data.isNullOrEmpty()) {
         displayRecipes(data)
