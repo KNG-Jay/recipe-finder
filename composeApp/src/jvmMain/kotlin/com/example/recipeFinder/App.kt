@@ -3,12 +3,16 @@ package com.example.recipeFinder
 import com.example.recipeFinder.logic.*
 import com.example.recipeFinder.server.*
 
+import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
@@ -16,6 +20,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -43,7 +50,6 @@ import coil3.request.crossfade
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import java.time.LocalDate
 
 
 @Composable
@@ -85,7 +91,7 @@ fun HomeScreen(navController: NavController) {
 
 @Composable
 fun DetailScreen(navController: NavController, data: String?) {
-    var recipesList by remember { mutableStateOf<List<ApiResponseItem>?>(null) }
+    var recipeList: List<ApiResponseItem> by remember { mutableStateOf(emptyList()) }
 
     Row {
         Button(onClick = { navController.popBackStack() }){
@@ -99,11 +105,14 @@ fun DetailScreen(navController: NavController, data: String?) {
         horizontalAlignment = Alignment.CenterHorizontally,) {
         Text("Here Are Some Suggestions From The Ingredients Listed")
         if (!data.isNullOrEmpty()) {
-            displayRecipes(data)
+            val (list, display) = displayRecipes(data)
+            recipeList = list
+            return display
         } else {
             Text("Error: No Ingredients Were Found In List...")
         }
     }
+    Footer()
 
 }
 
@@ -131,6 +140,7 @@ fun CheckerScreen(navController: NavController, inputData: String) {
         ) {
             Text("Ingredients Listed:")
             CheckerCard(inputList)
+            Text("Is This Correct?")
             Row {
                 Button(onClick = { navController.popBackStack() }) {
                     Text("Back")
@@ -164,7 +174,7 @@ fun Header() {
 @Composable
 fun Footer() {
     Row {
-        Text("©${LocalDate.now().year}${OWNER}")
+        Text(COPYRIGHT)
     }
 }
 
@@ -184,32 +194,52 @@ fun CheckCon(): String {
 }
 
 @Composable
-fun displayRecipes(ingList: String) {
+fun displayRecipes(ingList: String): Pair<List<ApiResponseItem>, Unit> {
+    val scrollState = rememberScrollState()
+    val lazyListState = rememberLazyListState()
     val result = remember { mutableStateOf<List<ApiResponseItem>>(emptyList()) }
 
     LaunchedEffect(Unit) {
         result.value = desktopGetResponse(ingList.trim())
     }
-    LazyColumn {
-        items(result.value) { recipe: ApiResponseItem ->
-            Column(modifier = Modifier
-                .padding(16.dp)
-                .fillMaxSize(),
-                ) {
-                Text(text = "ID: ${recipe.id}")
-                ImageDisplay(recipe.image)
-                Text(text = "Missed Ingredients [${recipe.missedIngredientCount}]: " +
-                        recipe.missedIngredients.joinToString(", ") { it.name })
-                Text(text = "Unused Ingredients [${recipe.usedIngredients.size}]: " +
-                        recipe.usedIngredients.joinToString(", ") { it.name })
-                Text(text = "Used Ingredients [${recipe.usedIngredientCount}]: " +
-                        recipe.usedIngredients.joinToString(", ") { it.name })
-                Spacer(Modifier
-                    .height(5.dp))
+    return Pair(result.value,
+        Box(modifier = Modifier.fillMaxSize()) {
+            VerticalScrollbar(
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .fillMaxHeight(),
+                adapter = rememberScrollbarAdapter(scrollState = lazyListState)
+            )
+            LazyColumn(state = lazyListState, modifier = Modifier.fillMaxSize()) {
+                items(result.value) { recipe: ApiResponseItem ->
+                    Column(
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .fillMaxWidth(),
+                    ) {
+                        Text(text = "ID: ${recipe.id}")
+                        ImageDisplay(recipe.image)
+                        Text(text = "Name: ${recipe.title}")
+                        Spacer(modifier = Modifier.height(3.dp))
+                        Text(
+                            text = "Missed Ingredients [${recipe.missedIngredientCount}]: " +
+                                    recipe.missedIngredients.joinToString(", ") { it.name })
+                        Text(
+                            text = "Unused Ingredients [${recipe.usedIngredients.size}]: " +
+                                    recipe.usedIngredients.joinToString(", ") { it.name })
+                        Text(
+                            text = "Used Ingredients [${recipe.usedIngredientCount}]: " +
+                                    recipe.usedIngredients.joinToString(", ") { it.name })
+                        Spacer(
+                            Modifier
+                                .height(8.dp)
+                        )
+                    }
+                }
             }
         }
-    }
 
+    )
 }
 
 fun getAsyncImageLoader(context: PlatformContext): ImageLoader {
