@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -195,7 +194,6 @@ fun CheckCon(): String {
 
 @Composable
 fun displayRecipes(ingList: String): Pair<List<ApiResponseItem>, Unit> {
-    val scrollState = rememberScrollState()
     val lazyListState = rememberLazyListState()
     val result = remember { mutableStateOf<List<ApiResponseItem>>(emptyList()) }
 
@@ -204,23 +202,16 @@ fun displayRecipes(ingList: String): Pair<List<ApiResponseItem>, Unit> {
     }
     return Pair(result.value,
         Box(modifier = Modifier.fillMaxSize()) {
-            VerticalScrollbar(
-                modifier = Modifier
-                    .align(Alignment.CenterEnd)
-                    .fillMaxHeight(),
-                adapter = rememberScrollbarAdapter(scrollState = lazyListState)
-            )
             LazyColumn(state = lazyListState, modifier = Modifier.fillMaxSize()) {
                 items(result.value) { recipe: ApiResponseItem ->
                     Column(
                         modifier = Modifier
-                            .padding(16.dp)
+                            .padding(20.dp)
                             .fillMaxWidth(),
                     ) {
-                        Text(text = "ID: ${recipe.id}")
+                        //Text(text = "ID: ${recipe.id}")
                         ImageDisplay(recipe.image)
-                        Text(text = "Name: ${recipe.title}")
-                        Spacer(modifier = Modifier.height(3.dp))
+                        Text(text = "Name: ${recipe.title}", Modifier.padding(2.dp, 7.dp))
                         Text(
                             text = "Missed Ingredients [${recipe.missedIngredientCount}]: " +
                                     recipe.missedIngredients.joinToString(", ") { it.name })
@@ -237,6 +228,12 @@ fun displayRecipes(ingList: String): Pair<List<ApiResponseItem>, Unit> {
                     }
                 }
             }
+            VerticalScrollbar(
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .fillMaxHeight(),
+                adapter = rememberScrollbarAdapter(scrollState = lazyListState)
+            )
         }
 
     )
