@@ -75,7 +75,7 @@ fun HomeScreen(navController: NavController, closeApp: () -> Unit) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Text("Enter Your Ingredients:  Separated By Spaces")
+                Text(text = "Enter Your Ingredients:  Separated By Comma(,)  And/Or  Space( )")
                 Spacer(Modifier.padding(20.dp))
                 TextField(
                     value = userInput,
@@ -127,16 +127,16 @@ fun DetailScreen(navController: NavController, data: String?) {
                     .safeContentPadding(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Text("Here Are Some Suggestions From The Ingredients Listed")
+                Text(text = "Here Are Some Suggestions From The Ingredients Listed",
+                    color = MaterialTheme.colorScheme.primary)
                 if (!data.isNullOrEmpty()) {
                     val (list, display) = displayRecipes(data)
                     recipeList = list
                     return display
                 } else {
-                    Text("Error: No Ingredients Were Found In List...")
+                    Text(text = "Error: No Ingredients Were Found In List...")
                 }
             }
-            Footer()
         }
     }
 }
@@ -148,14 +148,17 @@ fun CheckerScreen(navController: NavController, inputData: String) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
             ) {
-            Text("PLEASE ONLY USE LETTERS IN YOUR QUERY...")
+            Text(text = "PLEASE ONLY USE LETTERS IN YOUR QUERY...")
             Spacer(Modifier.padding(10.dp))
             Button(onClick = { navController.popBackStack() }) {
                 Text("Back")
             }
         }
     } else {
-        val inputList: List<String> = inputData.split(" ")
+        val inputList: List<String> = inputData
+            .split(",", ", ", " ")
+            .map { it.trim() }
+            .filter { it.isNotEmpty() && it != ","}
 
         Column(
             modifier = Modifier
@@ -193,9 +196,9 @@ fun CheckerScreen(navController: NavController, inputData: String) {
 fun CheckerCard(inputList: List<String>?) {
     if (inputList != null) {
         for (item in inputList) {
-            Text("-> $item")
+            Text(text = "-> $item")
         }
-    } else Text("FAILED TO GET INPUT LIST...")
+    } else Text(text = "FAILED TO GET INPUT LIST...")
 }
 
 @Composable

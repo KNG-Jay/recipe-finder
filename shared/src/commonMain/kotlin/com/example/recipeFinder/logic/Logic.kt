@@ -132,7 +132,7 @@ suspend fun getResponse(client: HttpClient?, ingredientsList: List<String>): Lis
         }
     }
     // MAX NUMBER OF RECIPES TO SHOW  --  DEFAULT: 10
-    val number = 20
+    val number = 25
     // (1) Maximize Used Ingredients || (2) Minimize Missing Ingredients
     val ranking = 2
     // Ignore Pantry Staples (Flour, Water, Salt, etc.)
@@ -142,9 +142,9 @@ suspend fun getResponse(client: HttpClient?, ingredientsList: List<String>): Lis
         append(baseUrl)
         append("&${key}")
         append("&${ingredients}")
-        append("&${number}")
-        append("&${ranking}")
-        append("&${ignorePantry}")
+        append("&number=${number}")
+        append("&ranking=${ranking}")
+        append("&ignorePantry${ignorePantry}")
     }
 
     try {

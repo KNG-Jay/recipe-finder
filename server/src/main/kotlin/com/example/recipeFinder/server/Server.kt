@@ -44,7 +44,11 @@ fun Application.module() {
         post(API_SERVER_POST) {
             try {
                 val ingredients: String = call.receiveText()
-                val response: List<ApiResponseItem> = getResponse(client, ingredients.split(" "))
+                val ingList: List<String> = ingredients
+                    .split(",", ", ", " ")
+                    .map { it.trim() }
+                    .filter { it.isNotEmpty() && it != ","}
+                val response: List<ApiResponseItem> = getResponse(client, ingList)
                 log.info("SERVER - RESPONSE :: SERVER RECEIVED:\n${response}")
                 val jsonArray: String = mapper.writeValueAsString(response)
                 log.info("SERVER - STAGED :: DATA PREPPED FOR CLIENT:\n${jsonArray}")
