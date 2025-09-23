@@ -52,39 +52,55 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 
 @Composable
-fun HomeScreen(navController: NavController) {
+fun HomeScreen(navController: NavController, closeApp: () -> Unit) {
     var userInput by remember { mutableStateOf("") }
 
-    Column(
+    Box (
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.primaryContainer)
-            .safeContentPadding(),
-        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Header()
-        Text("Enter Your Ingredients, Separated By Spaces")
-        TextField(
-            value = userInput,
-            onValueChange = { userInput = it },
-            label = { Text("Ingredients: ") },
-            modifier = Modifier
-                .background(Color.Magenta)
-                //.onClick()
-                .onKeyEvent { event ->
-                    if (event.key == Key.Enter) {
-                        navController.navigate("confirm/${userInput.trim()}")
-                        true
-                    } else {
-                        false
-                    }
-                },
-        )
-        Button(onClick = { navController.navigate("confirm/${userInput.trim()}") }) {
-            Text("Submit")
-        }
-        Footer()
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Header(closeApp)
 
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.secondaryContainer)
+                    .padding(horizontal = 16.dp)
+                    .safeContentPadding(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text("Enter Your Ingredients:  Separated By Spaces")
+                Spacer(Modifier.padding(20.dp))
+                TextField(
+                    value = userInput,
+                    onValueChange = { userInput = it },
+                    label = { Text("Ingredients: ") },
+                    modifier = Modifier
+                        .background(Color.Magenta)
+                        //.onClick()
+                        .onKeyEvent { event ->
+                            if (event.key == Key.Enter) {
+                                navController.navigate("confirm/${userInput.trim()}")
+                                true
+                            } else {
+                                false
+                            }
+                        },
+                )
+                Button(onClick = { navController.navigate("confirm/${userInput.trim()}") }) {
+                    Text("Submit")
+                }
+
+            }
+
+            Footer()
+        }
     }
 }
 
@@ -92,27 +108,37 @@ fun HomeScreen(navController: NavController) {
 fun DetailScreen(navController: NavController, data: String?) {
     var recipeList: List<ApiResponseItem> by remember { mutableStateOf(emptyList()) }
 
-    Row {
-        Button(onClick = { navController.popBackStack() }){
-            Text("Back")
-        }
-    }
-    Column(modifier = Modifier
+    Box(modifier = Modifier
         .fillMaxSize()
         .background(MaterialTheme.colorScheme.primaryContainer)
-        .safeContentPadding(),
-        horizontalAlignment = Alignment.CenterHorizontally,) {
-        Text("Here Are Some Suggestions From The Ingredients Listed")
-        if (!data.isNullOrEmpty()) {
-            val (list, display) = displayRecipes(data)
-            recipeList = list
-            return display
-        } else {
-            Text("Error: No Ingredients Were Found In List...")
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Row(horizontalArrangement = Arrangement.Start) {
+                Button(onClick = { navController.navigate("home") }) {
+                    Text("Back")
+                }
+            }
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.primaryContainer)
+                    .safeContentPadding(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Text("Here Are Some Suggestions From The Ingredients Listed")
+                if (!data.isNullOrEmpty()) {
+                    val (list, display) = displayRecipes(data)
+                    recipeList = list
+                    return display
+                } else {
+                    Text("Error: No Ingredients Were Found In List...")
+                }
+            }
+            Footer()
         }
     }
-    Footer()
-
 }
 
 @Composable
@@ -123,6 +149,7 @@ fun CheckerScreen(navController: NavController, inputData: String) {
             horizontalAlignment = Alignment.CenterHorizontally
             ) {
             Text("PLEASE ONLY USE LETTERS IN YOUR QUERY...")
+            Spacer(Modifier.padding(10.dp))
             Button(onClick = { navController.popBackStack() }) {
                 Text("Back")
             }
@@ -136,16 +163,26 @@ fun CheckerScreen(navController: NavController, inputData: String) {
                 .background(MaterialTheme.colorScheme.primaryContainer)
                 .safeContentPadding(),
             horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
             Text("Ingredients Listed:")
+            Spacer(Modifier.padding(10.dp))
             CheckerCard(inputList)
-            Text("Is This Correct?")
-            Row {
-                Button(onClick = { navController.popBackStack() }) {
-                    Text("Back")
-                }
-                Button(onClick = { navController.navigate("detail/${inputData}") }) {
-                    Text("Get")
+            Column(
+                modifier = Modifier
+                    .padding(top = 20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+            ) {
+                Text("Is This Correct?", Modifier.padding(bottom = 2.dp))
+                Row {
+                    Button(onClick = { navController.popBackStack() }) {
+                        Text("Back")
+                    }
+                    Spacer(Modifier.padding(horizontal = 5.dp))
+                    Button(onClick = { navController.navigate("detail/${inputData}") }) {
+                        Text("Go")
+                    }
                 }
             }
         }
@@ -162,18 +199,35 @@ fun CheckerCard(inputList: List<String>?) {
 }
 
 @Composable
-fun Header() {
-    Row {
-        Text(APP_NAME)
-        Text(CheckCon(), modifier = Modifier
-            .wrapContentWidth(Alignment.End))
+fun Header(closeApp: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .background(MaterialTheme.colorScheme.primary),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Button(
+            onClick = { closeApp() }
+        ) { Text("Exit") }
+        Spacer(Modifier.weight(1f))
+        Text(text = APP_NAME, style = MaterialTheme.typography.titleMedium)
+        Text(text = CheckCon(), Modifier.weight(1f).wrapContentWidth(Alignment.End))
     }
 }
 
 @Composable
 fun Footer() {
-    Row {
-        Text(COPYRIGHT)
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .background(MaterialTheme.colorScheme.primary),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Text(text = COPYRIGHT, style = MaterialTheme.typography.bodyMedium)
     }
 }
 
@@ -260,7 +314,7 @@ fun ImageDisplay(url: String) {
 
 @Composable
 @Preview
-fun App() {
+fun App(closeApp: () -> Unit) {
     setSingletonImageLoaderFactory { context ->
         getAsyncImageLoader(context)
     }
@@ -269,7 +323,7 @@ fun App() {
 
     MaterialTheme {
         NavHost(navController = navController, startDestination = "home") {
-            composable("home") { HomeScreen(navController) }
+            composable("home") { HomeScreen(navController, closeApp) }
 
             composable("confirm/{data}") { backStackEntry: NavBackStackEntry ->
                 val savedStateHandle = backStackEntry.savedStateHandle

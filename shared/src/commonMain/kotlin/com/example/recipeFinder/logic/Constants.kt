@@ -3,7 +3,7 @@ package com.example.recipeFinder.logic
 import java.time.LocalDate
 
 const val OWNER = "KNG-Jay"
- val COPYRIGHT = "© ${LocalDate.now().year}${OWNER}. All Rights Reserved."
+ val COPYRIGHT = "© ${LocalDate.now().year}  ${OWNER}.\tAll Rights Reserved."
 const val SERVER_HOST = "0.0.0.0"
 const val SERVER_ADDRESS = "http://localhost:"
 const val SERVER_PORT = 8080
