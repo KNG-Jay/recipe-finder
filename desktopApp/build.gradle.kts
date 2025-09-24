@@ -28,7 +28,7 @@ kotlin {
 
 compose.desktop {
     application {
-        mainClass = "com.example.recipeFinder.MainKt"
+        mainClass = "com.example.recipeFinder.desktop.MainKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)

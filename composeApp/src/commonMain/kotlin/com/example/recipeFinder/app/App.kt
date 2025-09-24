@@ -50,8 +50,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-// TODO:(BREAKDOWN TO UNIVERSAL UI COMPONENTS)
-// TODO:(ADD COMMON ITEM SELECTOR TO APPS)
+// TODO:( BREAKDOWN TO UNIVERSAL UI COMPONENTS )
+// TODO:( ADD COMMON ITEM SELECTOR TO APPS )
 @Composable
 fun HomeScreen(navController: NavController, closeApp: () -> Unit) {
     var userInput by remember { mutableStateOf("") }

@@ -1,8 +1,8 @@
 package com.example.recipeFinder.android
 
-import androidx.compose.runtime.Composable
 import com.example.recipeFinder.server.startServer
 
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -10,7 +10,7 @@ import androidx.compose.runtime.setValue
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-//TODO:(IMPLEMENT ANDROID LAUNCHER)
+//TODO:( IMPLEMENT ANDROID LAUNCHER )
 /*
 fun main() = application {
 

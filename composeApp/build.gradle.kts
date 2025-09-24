@@ -28,11 +28,11 @@ kotlin {
 
 compose.desktop {
     application {
-        mainClass = "com.example.recipeFinder.MainKt"
+        mainClass = "com.example.recipeFinder.app.MainKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "com.example.recipeFinder.desktop"
+            packageName = "com.example.recipeFinder.app"
             packageVersion = "1.0.0"
 
         }
