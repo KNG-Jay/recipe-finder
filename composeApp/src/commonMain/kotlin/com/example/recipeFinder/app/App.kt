@@ -1,4 +1,4 @@
-package com.example.recipeFinder
+package com.example.recipeFinder.app
 
 import com.example.recipeFinder.logic.*
 import com.example.recipeFinder.server.*

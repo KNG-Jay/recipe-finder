@@ -17,6 +17,7 @@ kotlin {
 
     sourceSets {
         androidMain.dependencies {
+            implementation(project(":composeApp"))
             implementation(project(":shared"))
             implementation(project(":server"))
 
