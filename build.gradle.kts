@@ -14,10 +14,6 @@ plugins {
     alias(libs.plugins.androidLint) apply false
 }
 
-tasks.withType<Jar> {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-}
-
 allprojects {
     repositories {
         google()

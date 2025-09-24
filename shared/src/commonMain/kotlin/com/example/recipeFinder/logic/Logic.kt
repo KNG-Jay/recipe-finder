@@ -1,16 +1,17 @@
 package com.example.recipeFinder.logic
 
-import io.ktor.client.*
-import io.ktor.client.plugins.logging.*
-import io.ktor.client.plugins.ClientRequestException
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.engine.cio.*
-import io.ktor.client.request.*
-import io.ktor.client.call.body
-import io.ktor.serialization.jackson.jackson
 import com.sksamuel.hoplite.ConfigLoaderBuilder
 import com.sksamuel.hoplite.addResourceOrFileSource
+import io.ktor.client.*
+import io.ktor.client.call.body
+import io.ktor.client.engine.cio.*
+import io.ktor.client.plugins.ClientRequestException
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.logging.*
+import io.ktor.client.request.*
+import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 
 
 data class Config(val apiKey: Key)
@@ -94,7 +95,11 @@ fun createClient(): HttpClient? {
     try {
         return HttpClient(CIO) {
             install(ContentNegotiation) {
-                jackson()
+                json(Json {
+                    prettyPrint = true
+                    isLenient = true
+                    ignoreUnknownKeys = true
+                })
             }
             install(Logging) {
                 logger = Logger.DEFAULT

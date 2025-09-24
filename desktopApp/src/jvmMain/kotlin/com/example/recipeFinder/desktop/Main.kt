@@ -1,4 +1,4 @@
-package com.example.recipeFinder
+package com.example.recipeFinder.desktop
 
 import androidx.compose.runtime.Composable
 import com.example.recipeFinder.server.startServer

@@ -17,7 +17,6 @@ kotlin {
 
         }
         commonTest.dependencies {
-            implementation(libs.kotlin.test)
 
         }
         jvmMain.dependencies {

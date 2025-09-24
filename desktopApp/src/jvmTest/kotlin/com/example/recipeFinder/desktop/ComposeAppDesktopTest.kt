@@ -1,4 +1,4 @@
-package com.example.recipeFinder
+package com.example.recipeFinder.desktop
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
