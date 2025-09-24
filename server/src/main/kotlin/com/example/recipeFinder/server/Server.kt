@@ -11,10 +11,12 @@ import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
+import io.ktor.serialization.jackson.jackson
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import io.ktor.server.plugins.BadRequestException
+import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.request.receiveText
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -31,6 +33,11 @@ fun startServer() {
 }
 
 fun Application.module() {
+
+    install(ContentNegotiation) {
+        jackson()
+    }
+
     val client = createClient()!!
     val mapper = jacksonObjectMapper()
 

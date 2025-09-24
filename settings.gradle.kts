@@ -36,3 +36,5 @@ plugins {
 include(":composeApp")
 include(":server")
 include(":shared")
+include(":androidApp")
+include(":desktopApp")

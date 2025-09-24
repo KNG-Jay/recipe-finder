@@ -7,7 +7,7 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.engine.cio.*
 import io.ktor.client.request.*
 import io.ktor.client.call.body
-import io.ktor.serialization.jackson.*
+import io.ktor.serialization.jackson.jackson
 import com.sksamuel.hoplite.ConfigLoaderBuilder
 import com.sksamuel.hoplite.addResourceOrFileSource
 import kotlinx.serialization.Serializable

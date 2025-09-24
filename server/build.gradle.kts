@@ -4,8 +4,12 @@ plugins {
     application
 }
 
-group = "com.example.recipeFinder"
-version = "1.0.0"
+tasks.withType<Tar> {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+tasks.withType<Zip> {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
 
 application {
     mainClass = "io.ktor.server.netty.EngineMain"
@@ -18,6 +22,7 @@ dependencies {
     implementation(project(":shared"))
     implementation(libs.ktor.serverCore)
     implementation(libs.ktor.serverNetty)
+    implementation(libs.ktor.server.content.negotiation)
     implementation(variantOf(libs.netty.epoll) { classifier("linux-x86_64") })
 
     testImplementation(libs.ktor.serverTestHost)
