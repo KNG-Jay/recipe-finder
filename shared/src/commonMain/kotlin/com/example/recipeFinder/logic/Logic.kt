@@ -9,9 +9,9 @@ import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
-import io.ktor.serialization.kotlinx.json.*
+import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.*
 
 
 data class Config(val apiKey: Key)
@@ -69,7 +69,7 @@ data class Ingredient(
     val name: String,
     val original: String,
     val originalName: String,
-    val extendedName: String?,
+    val extendedName: String? = null,
     val unit: String,
     val unitLong: String,
     val unitShort: String
@@ -149,7 +149,7 @@ suspend fun getResponse(client: HttpClient?, ingredientsList: List<String>): Lis
         append("&${ingredients}")
         append("&number=${number}")
         append("&ranking=${ranking}")
-        append("&ignorePantry${ignorePantry}")
+        append("&ignorePantry=${ignorePantry}")
     }
 
     try {

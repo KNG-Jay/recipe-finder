@@ -23,12 +23,13 @@ import io.ktor.server.routing.*
 
 
 fun startServer() {
-        embeddedServer(
-            Netty,
-            port = SERVER_PORT,
-            host = SERVER_HOST,
-            module = Application::module
-            ).start(wait = true)
+
+    embeddedServer(
+        Netty,
+        port = SERVER_PORT,
+        host = SERVER_HOST,
+        module = Application::module
+    ).start(wait = true)
 
 }
 

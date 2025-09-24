@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
+    alias(libs.plugins.serialization)
 }
 
 kotlin {
@@ -31,6 +32,7 @@ kotlin {
             api(libs.kotlin.test)
             api(libs.kotlin.testJunit)
             // Misc
+            implementation(libs.kotlinx.serialization.json)
             api(libs.kotlinx.coroutinesCore)
             api(libs.hoplite.core)
             api(libs.hoplite.hocon)
