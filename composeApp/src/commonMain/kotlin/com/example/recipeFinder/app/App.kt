@@ -242,7 +242,7 @@ fun CheckCon(): String {
 
     coroutineScope.launch {
         while (true) {
-            result.value = desktopCheckActive()
+            result.value = checkActive()
             delay(5000)
         }
     }
@@ -256,7 +256,7 @@ fun displayRecipes(ingList: String): Pair<List<ApiResponseItem>, Unit> {
     val result = remember { mutableStateOf<List<ApiResponseItem>>(emptyList()) }
 
     LaunchedEffect(Unit) {
-        result.value = desktopGetResponse(ingList.trim())
+        result.value = getResponse(ingList.trim())
     }
     return Pair(result.value,
         Box(modifier = Modifier.fillMaxSize()) {

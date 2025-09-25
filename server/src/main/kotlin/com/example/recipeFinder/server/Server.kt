@@ -76,7 +76,7 @@ fun Application.module() {
 
 }
 
-suspend fun desktopCheckActive(): String {
+suspend fun checkActive(): String {
     try {
         val client = createClient()!!
         val response: HttpResponse = client.get("${SERVER_ADDRESS}${SERVER_PORT}${API_SERVER_CON}")
@@ -90,7 +90,7 @@ suspend fun desktopCheckActive(): String {
     }
 }
 
-suspend fun desktopGetResponse(ingList: String): List<ApiResponseItem> {
+suspend fun getResponse(ingList: String): List<ApiResponseItem> {
     try {
         val client = createClient()!!
         val response: HttpResponse = client.post("${SERVER_ADDRESS}${SERVER_PORT}${API_SERVER_POST}") {
