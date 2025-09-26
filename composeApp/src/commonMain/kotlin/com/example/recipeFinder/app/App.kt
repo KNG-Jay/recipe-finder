@@ -177,7 +177,7 @@ fun CheckerScreen(navController: NavController, inputData: String) {
                         Text("Back")
                     }
                     Spacer(Modifier.padding(horizontal = 5.dp))
-                    Button(onClick = { navController.navigate("detail/${inputData}") }) {
+                    Button(onClick = { navController.navigate("detail/${inputList.joinToString(" ")}") }) {
                         Text("Go")
                     }
                 }
@@ -208,9 +208,9 @@ fun Header(closeApp: () -> Unit) {
         Button(
             onClick = { closeApp() }
         ) { Text("Exit") }
-        Spacer(Modifier.weight(1f))
+        //Spacer(Modifier.weight(1f))
         Text(text = APP_NAME, style = MaterialTheme.typography.titleMedium)
-        Text(text = checkCon(), Modifier.weight(1f).wrapContentWidth(Alignment.End))
+        //Text(text = checkCon(), Modifier.weight(1f).wrapContentWidth(Alignment.End))
     }
 }
 
@@ -227,7 +227,7 @@ fun Footer() {
         Text(text = COPYRIGHT, style = MaterialTheme.typography.bodyMedium)
     }
 }
-
+/*
 @Composable
 fun checkCon(): String {
     val result = remember { mutableStateOf("") }
@@ -242,14 +242,14 @@ fun checkCon(): String {
     return result.value
 
 }
-
+*/
 @Composable
 fun displayRecipes(ingList: String): Pair<List<ApiResponseItem>, Unit> {
     val lazyListState = rememberLazyListState()
     val result = remember { mutableStateOf<List<ApiResponseItem>>(emptyList()) }
 
     LaunchedEffect(Unit) {
-        result.value = getResponse(ingList.trim())
+        result.value = getSourceResponse(createClient(), ingList.split(" "))
     }
 
     return Pair(result.value,

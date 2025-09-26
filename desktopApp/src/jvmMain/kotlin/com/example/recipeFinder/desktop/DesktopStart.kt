@@ -1,5 +1,7 @@
 package com.example.recipeFinder.desktop
 
+import com.example.recipeFinder.app.App
+
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -10,7 +12,6 @@ import androidx.compose.ui.window.application
 
 
 fun main() = application {
-
     AppWindow()
 
 }

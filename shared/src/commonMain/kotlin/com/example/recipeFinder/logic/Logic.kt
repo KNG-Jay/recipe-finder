@@ -8,9 +8,6 @@ import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
-import io.ktor.client.statement.HttpResponse
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.*
@@ -156,7 +153,7 @@ suspend fun getSourceResponse(client: HttpClient?, ingredientsList: List<String>
         return emptyList()
     }
 }
-
+/*
 suspend fun checkActive(): String {
     try {
         val client = createClient()!!
@@ -186,3 +183,4 @@ suspend fun getResponse(ingList: String): List<ApiResponseItem> {
         return emptyList()
     }
 }
+*/
