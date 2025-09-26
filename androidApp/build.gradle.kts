@@ -28,7 +28,6 @@ kotlin {
 
 dependencies {
     implementation(project(":composeApp"))
-    implementation(libs.ktor.client.android)
     implementation(libs.androidx.kts.core)
     testImplementation(libs.androidx.test.core)
     testImplementation(libs.androidx.test.runner)

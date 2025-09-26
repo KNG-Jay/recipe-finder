@@ -21,28 +21,27 @@ kotlin {
             implementation(project.dependencies.platform(
                 libs.ktor.bom))
             api(libs.ktor.client.core)
-            api(libs.ktor.client.cio)
             api(libs.ktor.client.contentNegotiation)
             api(libs.ktor.client.logging)
-            api(libs.ktor.serialization.jackson)
-            implementation(libs.ktor.kotlinx.json)
-            // Misc
-            implementation(libs.kotlinx.serialization.json)
+            api(libs.ktor.kotlinx.json)
+            // Kotlinx
+            api(libs.kotlinx.serialization.json)
             api(libs.kotlinx.coroutinesCore)
             api(libs.kotlinx.coroutinesSwing)
+            // Misc
             api(libs.hoplite.core)
             api(libs.hoplite.hocon)
             api(libs.logback.classic)
 
         }
         commonTest.dependencies {
-            implementation(libs.bundles.common.test)
+            api(libs.bundles.common.test)
         }
         jvmMain.dependencies {
-
+            api(libs.ktor.client.cio)
         }
         androidMain.dependencies {
-
+            api(libs.ktor.client.okhttp)
         }
     }
 

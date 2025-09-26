@@ -48,7 +48,3 @@ kotlin {
         }
     }
 }
-
-//tasks.named("jvmRun") { enabled = false }
-tasks.named("jvmJar") { enabled = false }
-tasks.named("jvmTest") { enabled = false }

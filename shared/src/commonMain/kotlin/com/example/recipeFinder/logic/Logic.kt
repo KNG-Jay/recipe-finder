@@ -4,7 +4,6 @@ import com.sksamuel.hoplite.ConfigLoaderBuilder
 import com.sksamuel.hoplite.addResourceOrFileSource
 import io.ktor.client.*
 import io.ktor.client.call.body
-import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.*
@@ -96,7 +95,7 @@ internal fun getAPIKey(): String {
 
 fun createClient(): HttpClient? {
     try {
-        return HttpClient(CIO) {
+        return createPlatformHttpClientEngine().config {
             install(ContentNegotiation) {
                 json(Json {
                     prettyPrint = true
@@ -109,16 +108,10 @@ fun createClient(): HttpClient? {
                 level = LogLevel.HEADERS
             }
             expectSuccess = true
-            engine {
-                maxConnectionsCount = 1000
-                endpoint {
-                    maxConnectionsPerRoute = 100
-                    pipelineMaxSize = 20
-                    keepAliveTime = 5000
-                    connectTimeout = 5000
-                    connectAttempts = 5
-                }
-            }
+            // You can keep engine-specific configuration here,
+            // but common configuration is cleaner.
+
+
         }
     } catch (err: ClientRequestException) {
         println("Client Failed To Initialize -- ERROR::MESSAGE:  ${err.message}")
