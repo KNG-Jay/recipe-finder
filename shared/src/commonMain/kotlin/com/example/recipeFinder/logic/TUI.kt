@@ -41,7 +41,7 @@ fun initialize(client: HttpClient?, key: String) {
 
 suspend fun tui(client: HttpClient?) {
     suspend fun process(client: HttpClient?, list: List<String>) {
-        val response: List<ApiResponseItem> = getResponse(client, list)
+        val response: List<ApiResponseItem> = getSourceResponse(client, list)
         val display = processResponse(response)
         return display
     }

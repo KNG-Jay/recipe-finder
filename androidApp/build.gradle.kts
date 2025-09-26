@@ -1,26 +1,36 @@
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidLibrary)
-    alias(libs.plugins.androidLint)
-    alias(libs.plugins.composeMultiplatform)
+    alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeHotReload)
 }
 
 kotlin {
-    jvm()
-    androidLibrary {
-        namespace = "com.example.recipeFinder.android"
-        compileSdk = 36
-        minSdk = 24
-    }
+    jvmToolchain(21)
 
-    sourceSets {
-        androidMain.dependencies {
-            implementation(project(":composeApp"))
-            implementation(project(":shared"))
-            implementation(project(":server"))
-
+    androidTarget {
+        android {
+            namespace = "com.example.recipeFinder.android"
+            compileSdk = 36
+            defaultConfig {
+                minSdk = 26
+            }
+            packaging {
+                resources {
+                    excludes += "/META-INF/{AL2.0,LGPL2.1,INDEX.LIST}"
+                }
+            }
         }
     }
+}
+
+dependencies {
+    implementation(project(":composeApp"))
+    implementation(libs.ktor.client.android)
+    implementation(libs.androidx.kts.core)
+    testImplementation(libs.androidx.test.core)
+    testImplementation(libs.androidx.test.runner)
+    testImplementation(libs.androidx.test.junit)
 }

@@ -1,16 +1,13 @@
 package com.example.recipeFinder.app
 
 import com.example.recipeFinder.logic.*
-import com.example.recipeFinder.server.*
 
-import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,10 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -216,7 +210,7 @@ fun Header(closeApp: () -> Unit) {
         ) { Text("Exit") }
         Spacer(Modifier.weight(1f))
         Text(text = APP_NAME, style = MaterialTheme.typography.titleMedium)
-        Text(text = CheckCon(), Modifier.weight(1f).wrapContentWidth(Alignment.End))
+        Text(text = checkCon(), Modifier.weight(1f).wrapContentWidth(Alignment.End))
     }
 }
 
@@ -235,7 +229,7 @@ fun Footer() {
 }
 
 @Composable
-fun CheckCon(): String {
+fun checkCon(): String {
     val result = remember { mutableStateOf("") }
     val coroutineScope = rememberCoroutineScope()
 
@@ -257,15 +251,20 @@ fun displayRecipes(ingList: String): Pair<List<ApiResponseItem>, Unit> {
     LaunchedEffect(Unit) {
         result.value = getResponse(ingList.trim())
     }
+
     return Pair(result.value,
-        Box(modifier = Modifier.fillMaxSize()) {
-            LazyColumn(state = lazyListState, modifier = Modifier.fillMaxSize()) {
-                items(result.value) { recipe: ApiResponseItem ->
-                    Column(
-                        modifier = Modifier
-                            .padding(20.dp)
-                            .fillMaxWidth(),
-                    ) {
+        ScrollableLazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            lazyListState = lazyListState
+        ) {
+            // Since we wrapped the content in the actual implementations,
+            // we can just place the items here directly.
+            result.value.forEach { recipe ->
+                Column(
+                    modifier = Modifier
+                        .padding(20.dp)
+                        .fillMaxWidth(),
+                ) {
                         //Text(text = "ID: ${recipe.id}")
                         ImageDisplay(recipe.image)
                         Text(text = "Name: ${recipe.title}", Modifier.padding(2.dp, 7.dp))
@@ -282,17 +281,9 @@ fun displayRecipes(ingList: String): Pair<List<ApiResponseItem>, Unit> {
                             Modifier
                                 .height(8.dp)
                         )
-                    }
                 }
             }
-            VerticalScrollbar(
-                modifier = Modifier
-                    .align(Alignment.CenterEnd)
-                    .fillMaxHeight(),
-                adapter = rememberScrollbarAdapter(scrollState = lazyListState)
-            )
         }
-
     )
 }
 

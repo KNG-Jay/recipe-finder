@@ -11,17 +11,13 @@ kotlin {
     jvm()
 
     sourceSets {
-        commonMain.dependencies {
+        jvmMain.dependencies {
             implementation(project(":composeApp"))
-            implementation(project(":shared"))
             implementation(project(":server"))
 
         }
-        commonTest.dependencies {
-
-        }
-        jvmMain.dependencies {
-
+        jvmTest.dependencies {
+            implementation(libs.bundles.common.test)
         }
     }
 }

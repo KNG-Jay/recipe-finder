@@ -1,5 +1,5 @@
 [versions]
-gradle = "8.13.0"
+agp = "8.13.0"
 netty-transport = "4.1.68.Final"
 androidx-lifecycle = "2.9.4"
 composeHotReload = "1.0.0-beta08"
@@ -60,5 +60,10 @@ serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref 
 kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 ktor = { id = "io.ktor.plugin", version.ref = "ktor" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-androidLibrary = { id = "com.android.kotlin.multiplatform.library", version.ref = "gradle" }
-androidLint = { id = "com.android.lint", version.ref = "gradle" }
+androidMultiplatformLibrary = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
+androidApplication = { id = "com.android.application" }
+androidLint = { id = "com.android.lint", version.ref = "agp" }
+kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+
+[bundles]
+common-test = ["kotlin-test", "kotlin-testJunit"]

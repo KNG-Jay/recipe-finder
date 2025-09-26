@@ -9,6 +9,9 @@ import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.HttpResponse
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.*
@@ -126,7 +129,7 @@ fun createClient(): HttpClient? {
     }
 }
 
-suspend fun getResponse(client: HttpClient?, ingredientsList: List<String>): List<ApiResponseItem> {
+suspend fun getSourceResponse(client: HttpClient?, ingredientsList: List<String>): List<ApiResponseItem> {
     val baseUrl = API_SOURCE_SPOONACULAR
     val key: String = "apiKey=".plus(getAPIKey())
     val ingredients: String = buildString {
@@ -157,6 +160,36 @@ suspend fun getResponse(client: HttpClient?, ingredientsList: List<String>): Lis
         return response
     } catch (err: Exception) {
         println("ERROR GETTING RESPONSE DATA  --  ERROR::MESSAGE:  ${err.message}")
+        return emptyList()
+    }
+}
+
+suspend fun checkActive(): String {
+    try {
+        val client = createClient()!!
+        val response: HttpResponse = client.get("${SERVER_ADDRESS}${SERVER_PORT}${API_SERVER_CON}")
+        val check: String = response.body()
+        client.close()
+        return if (response.status.value in 200..299) "STATUS:  $check"
+        else "STATUS:  API_OFFLINE"
+    } catch (err: Exception) {
+        println("FAILED TO CONNECT TO KTOR SERVER  --  ERROR::MESSAGE:  ${err.message}")
+        return "STATUS:  API_OFFLINE"
+    }
+}
+
+suspend fun getResponse(ingList: String): List<ApiResponseItem> {
+    try {
+        val client = createClient()!!
+        val response: HttpResponse = client.post("${SERVER_ADDRESS}${SERVER_PORT}${API_SERVER_POST}") {
+            contentType(ContentType.Application.Json)
+            setBody(ingList)
+        }
+        client.close()
+        println("RESPONSE :: APP RECEIVED:\n${response.body() as String}")
+        return response.body()
+    } catch (err: Exception) {
+        println("FAILED TO CONNECT TO KTOR SERVER  --  ERROR::MESSAGE:  ${err.message}")
         return emptyList()
     }
 }

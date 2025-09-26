@@ -1,3 +1,7 @@
+import org.gradle.kotlin.dsl.dependencies
+import org.gradle.kotlin.dsl.implementation
+import org.gradle.kotlin.dsl.project
+
 plugins {
     alias(libs.plugins.kotlinJvm)
     alias(libs.plugins.ktor)
@@ -18,12 +22,18 @@ application {
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
 }
 
+
 dependencies {
     implementation(project(":shared"))
     implementation(libs.ktor.serverCore)
     implementation(libs.ktor.serverNetty)
     implementation(libs.ktor.server.content.negotiation)
-    implementation(variantOf(libs.netty.epoll) { classifier("linux-x86_64") })
+    implementation(libs.netty.epoll) {
+        artifact {
+            classifier = "linux-x86_64"
+        }
+    }
 
+    testImplementation(libs.bundles.common.test)
     testImplementation(libs.ktor.serverTestHost)
 }
