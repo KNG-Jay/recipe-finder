@@ -33,7 +33,6 @@ ktor-server-config-yaml = { module = "io.ktor:ktor-server-config-yaml", version.
 ktor-serverTestHost = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
-ktor-client-java = { module = "io.ktor:ktor-client-java", version.ref = "ktor" }
 ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
 ktor-client-contentNegotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
@@ -66,3 +65,7 @@ kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 
 [bundles]
 common-test = ["kotlin-test", "kotlin-testJunit"]
+androidx-test = ["androidx-test-core", "androidx-test-junit", "androidx-test-runner"]
+ktor-server = ["ktor-serverCore", "ktor-serverNetty", "ktor-server-config-yaml", "ktor-server-content-negotiation"]
+androidx-common = ["androidx-lifecycle-runtimeCompose", "androidx-lifecycle-viewmodelCompose", "androidx-navigation"]
+coil = ["coil-core", "coil-compose", "coil-network"]

@@ -23,8 +23,8 @@ kotlin {
             api(libs.ktor.client.core)
             api(libs.ktor.client.contentNegotiation)
             api(libs.ktor.client.logging)
-            api(libs.ktor.kotlinx.json)
             // Kotlinx
+            api(libs.ktor.kotlinx.json)
             api(libs.kotlinx.serialization.json)
             api(libs.kotlinx.coroutinesCore)
             api(libs.kotlinx.coroutinesSwing)
@@ -35,13 +35,13 @@ kotlin {
 
         }
         commonTest.dependencies {
-            api(libs.bundles.common.test)
+            implementation(libs.bundles.common.test)
         }
         jvmMain.dependencies {
-            api(libs.ktor.client.cio)
+            implementation(libs.ktor.client.cio)
         }
         androidMain.dependencies {
-            api(libs.ktor.client.okhttp)
+            implementation(libs.ktor.client.okhttp)
         }
     }
 

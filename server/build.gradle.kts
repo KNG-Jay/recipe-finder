@@ -25,9 +25,7 @@ application {
 
 dependencies {
     implementation(project(":shared"))
-    implementation(libs.ktor.serverCore)
-    implementation(libs.ktor.serverNetty)
-    implementation(libs.ktor.server.content.negotiation)
+    implementation(libs.bundles.ktor.server)
     implementation(libs.netty.epoll) {
         artifact {
             classifier = "linux-x86_64"

@@ -28,13 +28,9 @@ kotlin {
             api(compose.components.resources)
             api(compose.components.uiToolingPreview)
             // Coil
-            api(libs.coil.core)
-            api(libs.coil.compose)
-            api(libs.coil.network)
-            // Androidx
-            api(libs.androidx.navigation)
-            api(libs.androidx.lifecycle.viewmodelCompose)
-            api(libs.androidx.lifecycle.runtimeCompose)
+            api(libs.bundles.coil)
+            // Androidx - common utils
+            api(libs.bundles.androidx.common)
 
         }
         commonTest.dependencies {
@@ -42,9 +38,12 @@ kotlin {
         }
         jvmMain.dependencies {
             api(compose.desktop.currentOs)
-            api(libs.ktor.client.java)
+            api(libs.ktor.client.cio)
         }
         androidMain.dependencies {
+            api(libs.bundles.androidx.test)
+            api(libs.ktor.client.okhttp)
+            api(libs.androidx.kts.core)
         }
     }
 }

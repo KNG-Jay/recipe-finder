@@ -13,7 +13,6 @@ kotlin {
     sourceSets {
         jvmMain.dependencies {
             implementation(project(":composeApp"))
-
         }
         jvmTest.dependencies {
             implementation(libs.bundles.common.test)
